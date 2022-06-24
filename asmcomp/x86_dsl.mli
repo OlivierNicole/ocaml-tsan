@@ -37,7 +37,11 @@ val ah: arg
 val cl: arg
 val ax: arg
 val rax: arg
+val rbx: arg
+val rcx: arg
 val rdx: arg
+val r8: arg
+val r9: arg
 val r10: arg
 val r11: arg
 val r12: arg
@@ -55,6 +59,8 @@ val ebp: arg
 val esp: arg
 val st0: arg
 val st1: arg
+val rdi: arg
+val rsi: arg
 
 val mem32:
   data_type -> ?scale:int -> ?base:reg64 -> ?sym:string ->

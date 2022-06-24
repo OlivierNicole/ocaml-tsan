@@ -134,23 +134,4 @@ let instrument _label body =
     | Cconst_int _ | Cconst_natint _ | Cconst_float _
     | Cconst_symbol _ | Cvar _ as c -> c
   in
-  (* Don't call [__tsan_func_entry] or [__tsan_func_exit] for now. *)
-  (*
-  let entry_instr = Cmm_helpers.return_unit dbg @@
-    Cop(
-      Cextcall("__tsan_func_entry", typ_void, [], false),
-      [Cconst_symbol(label, dbg)],
-      dbg)
-  in
-  let exit_instr = Cmm_helpers.return_unit dbg @@
-    Cop(
-      Cextcall("__tsan_func_exit", typ_void, [], false),
-      [],
-      dbg)
-  in
-  let res_id = VP.create (V.create_local "res") in
-  Csequence(
-    entry_instr,
-    Clet (res_id, aux body, Csequence(exit_instr, Cvar (VP.var res_id))))
-  *)
   aux body

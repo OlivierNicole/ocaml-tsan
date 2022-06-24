@@ -389,6 +389,27 @@ let emit_float_test env cmp i lbl =
 (* Deallocate the stack frame before a return or tail call *)
 
 let output_epilogue env f =
+  if !Clflags.thread_sanitizer then begin
+    I.push rax;
+    I.push rcx;
+    I.push rdx;
+    I.push rsi;
+    I.push rdi;
+    I.push r8;
+    I.push r9;
+    I.push r10;
+    I.push r11;
+    emit_call "__tsan_func_exit";
+    I.pop r11;
+    I.pop r10;
+    I.pop r9;
+    I.pop r8;
+    I.pop rdi;
+    I.pop rsi;
+    I.pop rdx;
+    I.pop rcx;
+    I.pop rax;
+  end;
   if env.f.fun_frame_required then begin
     let n = (frame_size env) - 8 - (if fp then 8 else 0) in
     if n <> 0
@@ -464,6 +485,28 @@ let emit_instr env fallthrough i =
   | Lend -> ()
   | Lprologue ->
     assert (env.f.fun_prologue_required);
+  if !Clflags.thread_sanitizer then begin
+    I.push rax;
+    I.push rcx;
+    I.push rdx;
+    I.push rsi;
+    I.push rdi;
+    I.push r8;
+    I.push r9;
+    I.push r10;
+    I.push r11;
+    I.mov (mem64 NONE 72 RSP) rdi;
+    emit_call "__tsan_func_entry";
+    I.pop r11;
+    I.pop r10;
+    I.pop r9;
+    I.pop r8;
+    I.pop rdi;
+    I.pop rsi;
+    I.pop rdx;
+    I.pop rcx;
+    I.pop rax;
+  end;
     if fp then begin
       I.push rbp;
       cfi_adjust_cfa_offset 8;
