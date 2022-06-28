@@ -38,6 +38,8 @@ let reg ppf r =
       fprintf ppf "[si%i]" s
   | Stack(Outgoing s) ->
       fprintf ppf "[so%i]" s
+  | Stack Return_address ->
+      fprintf ppf "[sret_addr]"
   | Stack(Domainstate s) ->
       fprintf ppf "[ds%i]" s
   end

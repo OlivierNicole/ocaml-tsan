@@ -131,6 +131,11 @@ let rec regalloc ~ppf_dump round fd =
     Reg.reinit(); Liveness.fundecl newfd; regalloc ~ppf_dump (round + 1) newfd
   end else newfd
 
+let tsan_instrument fundecl =
+  if !Clflags.thread_sanitizer
+  then Thread_sanitizer.instrument_mach_fundecl fundecl
+  else fundecl
+
 let (++) x f = f x
 
 let compile_fundecl ~ppf_dump ~funcnames fd_cmm =
@@ -140,6 +145,7 @@ let compile_fundecl ~ppf_dump ~funcnames fd_cmm =
   ++ Profile.record ~accumulate:true "cmm_invariants" (cmm_invariants ppf_dump)
   ++ Profile.record ~accumulate:true "selection"
                     (Selection.fundecl ~future_funcnames:funcnames)
+  ++ Profile.record ~accumulate:true "tsan instrumentation" tsan_instrument
   ++ Profile.record ~accumulate:true "polling"
                     (Polling.instrument_fundecl ~future_funcnames:funcnames)
   ++ pass_dump_if ppf_dump dump_selection "After instruction selection"

@@ -23,6 +23,8 @@
 (** Instrumentation of a {!Cmm.expression}. *)
 val instrument : string -> Cmm.expression -> Cmm.expression
 
+val instrument_mach_fundecl : Mach.fundecl -> Mach.fundecl
+
 (** Call to [__tsan_init], which should be called at least once in the compiled
     program, before other [__tsan_*] API functions. Idempotent, i.e. can be
     called more than once without consequences. *)

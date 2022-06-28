@@ -135,3 +135,26 @@ let instrument _label body =
     | Cconst_symbol _ | Cvar _ as c -> c
   in
   aux body
+
+open Mach
+
+let instrument_mach_fundecl fdecl =
+  let return_addr = Reg.at_location Int Reg.(Stack Return_address) in
+  let call_tsan_entry_desc =
+    Iop (Iextcall {
+      func = "__tsan_func_entry";
+      ty_res = typ_void;
+      ty_args = [];
+      alloc = false;
+      stack_ofs = -1;
+    })
+  in
+  let call_tsan_entry =
+    { desc = call_tsan_entry_desc;
+      next = fdecl.fun_body;
+      arg = [| return_addr |];
+      res = [| |];
+      dbg = Debuginfo.none;
+      live = Reg.Set.empty }
+  in
+  { fdecl with fun_body = call_tsan_entry }

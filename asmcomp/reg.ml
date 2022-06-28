@@ -56,6 +56,7 @@ and stack_location =
     Local of int
   | Incoming of int
   | Outgoing of int
+  | Return_address
   | Domainstate of int
 
 type reg = t

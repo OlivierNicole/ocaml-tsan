@@ -75,6 +75,9 @@ let fundecl f =
   (* Sanity check: only function parameters can be live at entrypoint *)
   let wrong_live = Reg.Set.diff initially_live (Reg.set_of_array f.fun_args) in
   if not (Reg.Set.is_empty wrong_live) then begin
-    Misc.fatal_errorf "@[Liveness.fundecl:@\n%a@]"
-      Printmach.regset wrong_live
+    Misc.fatal_errorf "@[Liveness.fundecl:@\n wrong_live = %a,@ fun_args = %a,@ initially_live =@ %a@.\
+      fun name = %s@]"
+      Printmach.regset wrong_live Printmach.regset
+      (Reg.set_of_array f.fun_args) Printmach.regset initially_live
+      f.fun_name
   end

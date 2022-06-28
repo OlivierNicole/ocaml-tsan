@@ -42,6 +42,7 @@ and stack_location =
     Local of int
   | Incoming of int
   | Outgoing of int
+  | Return_address
   | Domainstate of int
 
 (* The [stack_location] describes the location of pseudo-registers
